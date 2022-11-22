@@ -1,46 +1,38 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Spinner } from "react-bootstrap"
 import axios from "axios"
-import { Link } from 'react-router-dom'
 
-const Photos = () => {
-  const [photos, setPhotos] = useState([]);
+const News = () => {
+  const [news, setNews] = useState([]);
 
   useEffect(() => {
     axios
-      .get("https://picsum.photos/v2/list")
-      .then((res) => setPhotos(res.data))
+      .get("https://newsapi.org/v2/top-headlines?apiKey=6d36a43e2ab643af9f2a95f64b8bf2cc&country=in")
+      .then((res) => setNews(res.data.articles))
       .catch((err) => console.log(err));
   }, []);
 
   return (
     <Container>
       <Row>
-        {photos.length ? (
-          photos.map((photo) => (
-            <Col md={3} className="mt-2 mb-2" key={photo.id}>
-              <Card style={{ width: "18rem", textAlign: "center" }}>
+        {news.length ? (
+          news.map((singleNews, index) => (
+            <Col md={4} className="mt-2 mb-2" key={index}>
+              <Card style={{ textAlign: "center" }}>
                 <Card.Img
                   variant="top"
-                  src={photo.download_url}
+                  src={singleNews.urlToImage}
                   style={{ height: "200px" }}
                 />
                 <Card.Body>
-                  <Card.Title>{photo.author}</Card.Title>
+                  <Card.Title>{singleNews.content}</Card.Title>
                   <a
-                    href={photo.url}
+                    href={singleNews.url}
                     className="btn btn-dark btn-sm"
                     style={{ margin: "0 5px" }}
                   >
-                    View details
+                    Read more
                   </a>
-                  <Link
-                    to={`/photos/${photo.id}`}
-                    className="btn btn-dark btn-sm"
-                    style={{ margin: "0 5px" }}
-                  >
-                    View enlarged
-                  </Link>
                 </Card.Body>
               </Card>
             </Col>
@@ -59,6 +51,6 @@ const Photos = () => {
   );
 };
 
-export default Photos;
+export default News;
 
 // Various types of request method/ HTTP methods - GET, POST, etc
